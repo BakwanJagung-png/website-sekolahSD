@@ -1,0 +1,67 @@
+* {
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background: #f0f4f8;
+  text-align: center;
+}
+
+h1 {
+  margin: 20px;
+  color: #333;
+}
+
+.login-box {
+  background: white;
+  width: 300px;
+  margin: 100px auto;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px gray;
+}
+
+.login-box input, .login-box button {
+  width: 90%;
+  margin: 10px 0;
+  padding: 10px;
+}
+
+.bg-nav {
+  background-color: #800000;
+}
+
+.navbar .right a {
+  text-decoration: none;
+  color: white;
+  background: #cc0000;
+  padding: 6px 12px;
+  border-radius: 5px;
+}
+.navbar .right a:hover {
+  background: #a30000;
+}
+
+.foto-sd {
+  width: 50px;
+  height: 50px;
+}
+.guru-card, .siswa {
+  display: inline-block;
+  margin: 15px;
+  background: white;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 5px gray;
+}
+
+.guru-card img, .siswa img {
+  width: 100px;
+  height: 100px;
+  border-radius: 10px;
+}
+
+.guru-card:hover, .siswa:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 4px 15px rgba(0,0,0,0.2);
+}
