@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Kelas 1 - SD Nusantara</title>
+    <link rel="stylesheet" href="dist/css/admin.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </head>
+  <body>
+    <!-- Navigation Bar (SAMA SEPERTI admin.html) -->
+    <nav
+      class="navbar navbar-expand-lg bg-nav navbar-dark text-white shadow sticky-top"
+    >
+      <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center" href="admin.html">
+          <img
+            class="foto-sd me-2"
+            src="/assets/images/logo.png"
+            alt="SD"
+            height="40"
+          />
+          SD Nusantara
+        </a>
+
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#mainNavbar"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNavbar">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="admin.html" id="nav-home">
+                <i class="fas fa-home"></i> Dashboard
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="guru.html" id="nav-guru">
+                <i class="fas fa-chalkboard-teacher"></i> Data Guru
+              </a>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="nav-kelas"
+                role="button"
+                data-bs-toggle="dropdown"
+              >
+                <i class="fas fa-users"></i> Data Kelas
+              </a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="kelas1.html"
+                    id="dropdown-kelas1"
+                    >Kelas 1</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="kelas2.html"
+                    id="dropdown-kelas2"
+                    >Kelas 2</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="kelas3.html"
+                    id="dropdown-kelas3"
+                    >Kelas 3</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="kelas4.html"
+                    id="dropdown-kelas4"
+                    >Kelas 4</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="kelas5.html"
+                    id="dropdown-kelas5"
+                    >Kelas 5</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="kelas6.html"
+                    id="dropdown-kelas6"
+                    >Kelas 6</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="pengumuman.html" id="nav-pengumuman">
+                <i class="fas fa-bullhorn"></i> Pengumuman
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="jadwal.html" id="nav-jadwal">
+                <i class="fas fa-calendar-alt"></i> Jadwal
+              </a>
+            </li>
+          </ul>
+
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+              >
+                <i class="fas fa-user-cog"></i> Admin
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li>
+                  <a class="dropdown-item" href="profile.html"
+                    ><i class="fas fa-user"></i> Profil Saya</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="settings.html"
+                    ><i class="fas fa-cog"></i> Pengaturan</a
+                  >
+                </li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <a class="dropdown-item text-danger" href="index.html"
+                    ><i class="fas fa-sign-out-alt"></i> Logout</a
+                  >
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Breadcrumb Navigation -->
+    <div class="container mt-3">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="admin.html"><i class="fas fa-home"></i></a>
+          </li>
+          <li class="breadcrumb-item"><a href="#">Data Kelas</a></li>
+          <li class="breadcrumb-item active" id="breadcrumb-current">
+            Kelas 1
+          </li>
+        </ol>
+      </nav>
+    </div>
+
+    <!-- Main Content -->
+    <!-- Update header section -->
+    <div class="container mt-4">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Daftar Siswa Kelas 1</h1>
+        <button class="btn btn-primary" onclick="kelasManager.openAddModal()">
+          <i class="fas fa-plus"></i> Tambah Siswa
+        </button>
+      </div>
+
+      <div class="row" id="siswa-container">
+        <!-- Dynamic content -->
+      </div>
+    </div>
+
+    <!-- Add Siswa Modal -->
+    <div class="modal fade" id="siswaModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header bg-dark text-white">
+            <h5 class="modal-title" id="siswaModalLabel">Tambah Siswa Baru</h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="siswaForm">
+              <div class="mb-3">
+                <label class="form-label">NIS</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="siswa-nis"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Nama Lengkap</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="siswa-nama"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Foto (URL)</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="siswa-foto"
+                  required
+                />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Batal
+            </button>
+            <button type="submit" form="siswaForm" class="btn btn-primary">
+              Simpan
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+      <div class="container">
+        <p>&copy; 2024 SD Nusantara. All rights reserved.</p>
+        <p class="mb-0">Jl. Pendidikan No. 123, Jakarta | Telp: (021) 123456</p>
+      </div>
+    </footer>
+
+    <script src="dist/js/navigation.js"></script>
+    <script src="dist/js/storage.js"></script>
+    <script src="dist/js/kelas.js"></script>
+    <script src="dist/js/dashboard.js"></script>
+  </body>
+</html>
