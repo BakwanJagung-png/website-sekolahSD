@@ -272,3 +272,28 @@ footer {
     width: 100%;
   }
 }
+
+/* Make phone numbers wrap nicely on small screens */
+.phone-wrap {
+  word-break: break-all;
+  white-space: normal;
+}
+
+/* improve toast custom-alert visual */
+.custom-alert {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 3000;
+  padding: 10px 14px;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* make activity message compact on small screens */
+@media (max-width: 576px) {
+  .list-group-item .d-flex { flex-direction: column; align-items: flex-start; gap: 6px; }
+}
