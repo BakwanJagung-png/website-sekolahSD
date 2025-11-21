@@ -1,152 +1,290 @@
-// kelas.js - Enhanced with CRUD functionality
-class KelasManager {
-  constructor() {
-    this.currentKelas = this.getCurrentKelas();
-    this.currentEditId = null;
-    this.init();
+// kelas.js - Universal class page manager (CRUD, aktivitas, kompatibel storage.js)
+(function () {
+  // Helper selectors
+  const $ = sel => document.querySelector(sel);
+  const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+  // Determine current kelas key: e.g. "kelas1.html" -> "kelas1"
+  function currentKelasKey() {
+    // prefer explicit data attribute on body if present
+    const el = document.body;
+    if (el && el.dataset && el.dataset.kelas) return el.dataset.kelas;
+    const file = window.location.pathname.split('/').pop() || 'admin.html';
+    const m = file.match(/kelas(\d)\.html/i);
+    if (m) return 'kelas' + m[1];
+    // fallback: default to kelas1
+    return 'kelas1';
   }
 
-  getCurrentKelas() {
-    const path = window.location.pathname;
-    const match = path.match(/kelas(\d+)\.html/);
-    return match ? `kelas${match[1]}` : "kelas1";
+  const kelasKey = currentKelasKey(); // e.g. 'kelas1'
+
+  // Fallback small helpers for alerts/confirm if not present in global scope
+  function _showAlert(msg, type = 'info') {
+    if (typeof showAnimatedAlert === 'function') return showAnimatedAlert(msg, type);
+    // minimal fallback
+    const el = document.createElement('div');
+    el.className = 'alert alert-' + (type === 'danger' ? 'danger' : (type === 'success' ? 'success' : 'info')) + ' fixed-top';
+    el.style.top = '70px'; el.style.right = '20px'; el.style.zIndex = 9999; el.style.minWidth = '240px';
+    el.textContent = msg;
+    document.body.appendChild(el);
+    setTimeout(()=> el.remove(), 2500);
   }
 
-  init() {
-    this.renderSiswa();
-    this.setupEventListeners();
+  function _confirm(msg, cb) {
+    if (typeof confirmAnimated === 'function') return confirmAnimated(msg, cb);
+    if (confirm(msg)) cb();
   }
 
-  setupEventListeners() {
-    document.getElementById("siswaForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      this.saveSiswa();
+  // Render list of siswa for the kelasKey into #siswa-container
+  function renderSiswaList() {
+    const container = $('#siswa-container');
+    if (!container) return;
+    const siswaArr = dataStorage.getSiswa(kelasKey) || [];
+
+    if (!siswaArr.length) {
+      container.innerHTML = `<div class="col-12"><div class="card p-4 text-center">Belum ada siswa di ${kelasKey}.</div></div>`;
+      return;
+    }
+
+    // Use bootstrap grid cards
+    container.innerHTML = siswaArr.map(s => {
+      // ensure id exists
+      const sid = s.id || ('id' + Math.floor(Math.random()*1e9));
+      // safe values
+      const foto = (s.foto && s.foto.length) ? s.foto : 'assets/images/default-avatar.png';
+      const nama = s.nama || '-';
+      const nis = s.nis || '-';
+
+      return `
+        <div class="col-md-3 col-sm-6 col-12 mb-4">
+          <div class="card siswa-card text-center">
+            <img src="${foto}" alt="${nama}" class="card-img-top mx-auto mt-3" style="width:120px;height:120px;object-fit:cover;border-radius:10px;">
+            <div class="card-body">
+              <h6 class="card-title mb-1">${nama}</h6>
+              <p class="mb-1 small text-muted">NIS: ${nis}</p>
+              <div class="d-flex justify-content-center gap-2 mt-2">
+                <button class="btn btn-sm btn-outline-primary" data-action="detail" data-id="${sid}"><i class="fas fa-eye"></i></button>
+                <button class="btn btn-sm btn-outline-warning" data-action="edit" data-id="${sid}"><i class="fas fa-pen"></i></button>
+                <button class="btn btn-sm btn-outline-danger" data-action="delete" data-id="${sid}"><i class="fas fa-trash"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // Render modal detail (if exists) or fallback to alert
+  function showDetailById(id) {
+    const siswaArr = dataStorage.getSiswa(kelasKey) || [];
+    const s = siswaArr.find(x => String(x.id) === String(id));
+    if (!s) return;
+    // if #detailSiswaModal exists in DOM, populate it
+    const modalEl = $('#detailSiswaModal');
+    if (modalEl) {
+      const nameEl = modalEl.querySelector('.detail-nama');
+      const nisEl = modalEl.querySelector('.detail-nis');
+      const fotoEl = modalEl.querySelector('.detail-foto');
+      if (nameEl) nameEl.textContent = s.nama || '-';
+      if (nisEl) nisEl.textContent = s.nis || '-';
+      if (fotoEl) fotoEl.src = s.foto || 'assets/images/default-avatar.png';
+      new bootstrap.Modal(modalEl).show();
+      return;
+    }
+    // fallback: alert with info
+    _showAlert(`${s.nama} — NIS: ${s.nis}`, 'info');
+  }
+
+  // Prefill modal form for edit
+  let currentEditId = null;
+  function openEditModal(id) {
+    const siswaArr = dataStorage.getSiswa(kelasKey) || [];
+    const s = siswaArr.find(x => String(x.id) === String(id));
+    if (!s) return;
+    currentEditId = s.id;
+
+    const fNis = $('#siswa-nis');
+    const fNama = $('#siswa-nama');
+    const fFoto = $('#siswa-foto');
+
+    if (fNis) fNis.value = s.nis || '';
+    if (fNama) fNama.value = s.nama || '';
+    if (fFoto) fFoto.value = s.foto || '';
+
+    // show modal
+    const modalEl = $('#siswaModal');
+    if (modalEl) new bootstrap.Modal(modalEl).show();
+  }
+
+  // Clear and open modal for add
+  function openAddModal() {
+    currentEditId = null;
+    const form = $('#siswaForm');
+    if (form) form.reset();
+    const modalEl = $('#siswaModal');
+    if (modalEl) new bootstrap.Modal(modalEl).show();
+  }
+
+  // Save (add or update)
+  function saveFromForm(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const nis = ($('#siswa-nis') || {value:''}).value.trim();
+    const nama = ($('#siswa-nama') || {value:''}).value.trim();
+    const foto = ($('#siswa-foto') || {value:''}).value.trim();
+
+    if (!nama) {
+      _showAlert('Nama siswa wajib diisi', 'danger');
+      return;
+    }
+
+    if (currentEditId) {
+      // update existing
+      const list = dataStorage.getSiswa(kelasKey) || [];
+      const idx = list.findIndex(x => String(x.id) === String(currentEditId));
+      if (idx === -1) {
+        _showAlert('Data tidak ditemukan', 'danger');
+        return;
+      }
+      list[idx] = { ...list[idx], nis, nama, foto };
+      dataStorage.saveSiswa(kelasKey, list, { emitActivity: true, actor: 'Admin Web' });
+      // create detalied activity via storage API if exists
+      if (typeof dataStorage.addActivity === 'function') dataStorage.addActivity({ type: 'siswa', actor: 'Admin Web', message: `Mengubah data siswa: ${nama} (NIS ${nis})`, meta: kelasKey });
+      _showAlert('Data siswa berhasil diperbarui', 'success');
+    } else {
+      // add new
+      if (typeof dataStorage.addSiswa === 'function') {
+        const added = dataStorage.addSiswa(kelasKey, { nis, nama, foto }, { actor: 'Admin Web', emitActivity: true });
+        // addSiswa will emit activity and update stats
+      } else {
+        // fallback: manual push
+        const all = dataStorage.get('siswaData', {});
+        if (!Array.isArray(all[kelasKey])) all[kelasKey] = [];
+        const newItem = { id: 'id' + Date.now(), nis, nama, foto };
+        all[kelasKey].push(newItem);
+        dataStorage.set('siswaData', all);
+        if (typeof dataStorage.addActivity === 'function') dataStorage.addActivity({ type: 'siswa', actor: 'Admin Web', message: `Menambahkan siswa: ${nama} (NIS ${nis})`, meta: kelasKey });
+      }
+      _showAlert('Siswa baru berhasil ditambahkan', 'success');
+    }
+
+    // close modal & rerender
+    const modalEl = $('#siswaModal');
+    if (modalEl) {
+      const inst = bootstrap.Modal.getInstance(modalEl);
+      if (inst) inst.hide();
+    }
+    renderSiswaList();
+  }
+
+  // delete
+  function deleteById(id) {
+    const siswaArr = dataStorage.getSiswa(kelasKey) || [];
+    const found = siswaArr.find(x => String(x.id) === String(id));
+    if (!found) return _showAlert('Data tidak ditemukan', 'danger');
+
+    _confirm(`Hapus siswa ${found.nama} (NIS ${found.nis}) ?`, () => {
+      if (typeof dataStorage.removeSiswa === 'function') {
+        dataStorage.removeSiswa(kelasKey, id, { emitActivity: true, actor: 'Admin Web' });
+      } else {
+        // fallback manual remove
+        const all = dataStorage.get('siswaData', {});
+        all[kelasKey] = (all[kelasKey] || []).filter(x => String(x.id) !== String(id));
+        dataStorage.set('siswaData', all);
+        if (typeof dataStorage.addActivity === 'function') dataStorage.addActivity({ type:'siswa', actor:'Admin Web', message:`Menghapus siswa: ${found.nama} (NIS ${found.nis})`, meta: kelasKey });
+      }
+      _showAlert('Siswa berhasil dihapus', 'success');
+      renderSiswaList();
     });
   }
 
-  renderSiswa() {
-    const siswaData = dataStorage.getSiswa(this.currentKelas);
-    const container = document.getElementById("siswa-container");
+  // Event delegation for card buttons
+  function attachCardHandlers() {
+    const container = $('#siswa-container');
+    if (!container) return;
+    container.addEventListener('click', (ev) => {
+      const btn = ev.target.closest('button[data-action]');
+      if (!btn) return;
+      const action = btn.dataset.action;
+      const id = btn.dataset.id;
+      if (action === 'detail') showDetailById(id);
+      else if (action === 'edit') openEditModal(id);
+      else if (action === 'delete') deleteById(id);
+    });
+  }
 
-    container.innerHTML = siswaData
-      .map(
-        (siswa) => `
-            <div class="col-md-3 mb-3">
-                <div class="card siswa text-center">
-                    <img src="${
-                      siswa.foto
-                    }" class="card-img-top mx-auto mt-3" alt="Foto ${
-          siswa.nama
-        }" style="width: 150px; height: 150px; object-fit: cover;">
-                    <div class="card-body">
-                        <h5 class="card-title">${siswa.nama}</h5>
-                        <p class="card-text">NIS: ${siswa.nis}</p>
-                        <p class="card-text"><small class="text-muted">Siswa ${this.currentKelas.replace(
-                          "kelas",
-                          "Kelas "
-                        )}</small></p>
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-outline-warning btn-sm" onclick="kelasManager.editSiswa(${
-                              siswa.id
-                            })">
-                                Edit
-                            </button>
-                            <button type="button" class="btn btn-outline-danger btn-sm" onclick="kelasManager.deleteSiswa(${
-                              siswa.id
-                            })">
-                                Hapus
-                            </button>
-                        </div>
-                    </div>
-                </div>
+  // Optional search input support (#searchSiswa)
+  function attachSearch() {
+    const s = $('#searchSiswa');
+    if (!s) return;
+    s.addEventListener('input', (e) => {
+      const q = e.target.value.trim().toLowerCase();
+      const all = dataStorage.getSiswa(kelasKey) || [];
+      const filtered = all.filter(x => (x.nama||'').toLowerCase().includes(q) || (x.nis||'').includes(q));
+      const container = $('#siswa-container');
+      if (!container) return;
+      container.innerHTML = filtered.length ? filtered.map(s => {
+        const sid = s.id;
+        const foto = s.foto || 'assets/images/default-avatar.png';
+        return `
+        <div class="col-md-3 col-sm-6 col-12 mb-4">
+          <div class="card siswa-card text-center">
+            <img src="${foto}" style="width:120px;height:120px;object-fit:cover;border-radius:10px;margin:12px auto;">
+            <div class="card-body">
+              <h6 class="card-title">${s.nama}</h6>
+              <p class="small text-muted">NIS: ${s.nis||'-'}</p>
+              <div class="d-flex justify-content-center gap-2 mt-2">
+                <button class="btn btn-sm btn-outline-primary" data-action="detail" data-id="${sid}"><i class="fas fa-eye"></i></button>
+                <button class="btn btn-sm btn-outline-warning" data-action="edit" data-id="${sid}"><i class="fas fa-pen"></i></button>
+                <button class="btn btn-sm btn-outline-danger" data-action="delete" data-id="${sid}"><i class="fas fa-trash"></i></button>
+              </div>
             </div>
-        `
-      )
-      .join("");
+          </div>
+        </div>`;
+      }).join('') : `<div class="col-12"><div class="card p-4">Tidak ada hasil untuk "${q}"</div></div>`;
+    });
   }
 
-  openAddModal() {
-    this.currentEditId = null;
-    document.getElementById("siswaModalLabel").textContent =
-      "Tambah Siswa Baru";
-    document.getElementById("siswaForm").reset();
-    new bootstrap.Modal(document.getElementById("siswaModal")).show();
-  }
+  // Init: wire up form & buttons
+  document.addEventListener('DOMContentLoaded', () => {
+    // render initial
+    renderSiswaList();
 
-  editSiswa(id) {
-    const siswaData = dataStorage.getSiswa(this.currentKelas);
-    const siswa = siswaData.find((s) => s.id === id);
+    // wire form submit
+    const form = $('#siswaForm');
+    if (form) form.addEventListener('submit', saveFromForm);
 
-    if (siswa) {
-      this.currentEditId = id;
-      document.getElementById("siswaModalLabel").textContent =
-        "Edit Data Siswa";
+    // wire add button if present
+    const addBtn = document.querySelector('[onclick*="kelasManager.openAddModal"], [data-open-siswa-modal]');
+    if (addBtn) addBtn.addEventListener('click', openAddModal);
 
-      document.getElementById("siswa-nis").value = siswa.nis;
-      document.getElementById("siswa-nama").value = siswa.nama;
-      document.getElementById("siswa-foto").value = siswa.foto;
+    // wire delegation
+    attachCardHandlers();
+    attachSearch();
 
-      new bootstrap.Modal(document.getElementById("siswaModal")).show();
+    // listen to storage events (cross-tab)
+    window.addEventListener('sdn:dashboard-updated', () => {
+      renderSiswaList();
+    });
+    window.addEventListener('storage', (ev) => {
+      if (ev.key && ev.key.startsWith('sdn_v1_')) renderSiswaList();
+    });
+  });
+
+  // Expose some utilities (optional)
+  window.kelasManager = {
+    render: renderSiswaList,
+    openAddModal,
+    openEditModal,
+    showDetail: showDetailById
+  };
+
+  // mobile css safety (non-invasive)
+  const mobileStyle = document.createElement('style');
+  mobileStyle.textContent = `
+    @media (max-width:576px) {
+      .siswa-card { width:100% !important; }
+      .siswa-card img { width:100px !important; height:100px !important; }
     }
-  }
-
-  saveSiswa() {
-    const formData = {
-      nis: document.getElementById("siswa-nis").value,
-      nama: document.getElementById("siswa-nama").value,
-      foto: document.getElementById("siswa-foto").value,
-    };
-
-    let siswaData = dataStorage.getSiswa(this.currentKelas);
-
-    if (this.currentEditId) {
-      // Update existing
-      const index = siswaData.findIndex((s) => s.id === this.currentEditId);
-      if (index !== -1) {
-        siswaData[index] = { ...siswaData[index], ...formData };
-      }
-    } else {
-      // Add new
-      const newId = Math.max(...siswaData.map((s) => s.id), 0) + 1;
-      siswaData.push({ id: newId, ...formData });
-    }
-
-    dataStorage.saveSiswa(this.currentKelas, siswaData);
-    this.renderSiswa();
-
-    bootstrap.Modal.getInstance(document.getElementById("siswaModal")).hide();
-    this.showAlert("Data siswa berhasil disimpan!", "success");
-  }
-
-  deleteSiswa(id) {
-    if (confirm("Apakah Anda yakin ingin menghapus data siswa ini?")) {
-      let siswaData = dataStorage.getSiswa(this.currentKelas);
-      siswaData = siswaData.filter((s) => s.id !== id);
-      dataStorage.saveSiswa(this.currentKelas, siswaData);
-      this.renderSiswa();
-      this.showAlert("Data siswa berhasil dihapus!", "success");
-    }
-  }
-
-  showAlert(message, type) {
-    const alertDiv = document.createElement("div");
-    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
-    alertDiv.innerHTML = `
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
-
-    document
-      .querySelector(".container.mt-4")
-      .insertBefore(
-        alertDiv,
-        document.querySelector(".d-flex.justify-content-between")
-      );
-
-    setTimeout(() => {
-      alertDiv.remove();
-    }, 3000);
-  }
-}
-
-const kelasManager = new KelasManager();
+  `;
+  document.head.appendChild(mobileStyle);
+})();
