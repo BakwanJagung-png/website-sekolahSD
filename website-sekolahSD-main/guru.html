@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <!-- Mengatur encoding karakter dan judul halaman -->
+    <meta charset="UTF-8" />
+    <title>Data Guru - SD Nusantara</title>
+
+    <!-- Memuat file CSS utama untuk tampilan admin -->
+    <link rel="stylesheet" href="dist/css/admin.css" />
+
+    <!-- Ikon Font Awesome untuk ikon navigasi dan tombol -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+    <!-- Bootstrap untuk layout dan komponen responsif -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Style tambahan khusus halaman ini -->
+    <style>
+      /* Menandai item navbar yang aktif */
+      .active {
+        font-weight: bold;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 5px;
+      }
+
+      /* Menegaskan branding */
+      .navbar-brand {
+        font-weight: bold;
+      }
+
+      /* Tampilan gambar pada modal */
+      .modal-img {
+        max-height: 70vh;
+        object-fit: contain;
+      }
+
+      /* Mengatur gaya modal agar lebih modern */
+      .modal-content {
+        border-radius: 15px;
+        overflow: hidden;
+      }
+
+      /* Header modal */
+      .modal-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+      }
+
+      /* Judul modal */
+      .modal-title {
+        color: #333;
+        font-weight: 600;
+      }
+
+      /* Body modal detail */
+      .detail-modal .modal-body {
+        padding: 0;
+        text-align: center;
+        background-color: #f8f9fa;
+      }
+
+      /* Custom alert untuk notifikasi */
+      .custom-alert {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        min-width: 250px;
+        padding: 14px 20px;
+        border-radius: 10px;
+        color: #fff;
+        font-weight: 500;
+        font-size: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        opacity: 0;
+        transform: translateY(-20px);
+        z-index: 2000;
+        animation: slideIn 0.5s forwards;
+      }
+
+      /* Animasi muncul alert */
+      @keyframes slideIn {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Animasi menghilang alert */
+      @keyframes slideOut {
+        to {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+      }
+
+      .custom-alert.hide {
+        animation: slideOut 0.5s forwards;
+      }
+
+      /* Style untuk opsi foto */
+      .foto-option-container {
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        padding: 15px;
+        margin-bottom: 15px;
+      }
+
+      .foto-option-header {
+        margin-bottom: 10px;
+      }
+
+      /* Preview image styling */
+      .foto-preview-container {
+        margin-top: 10px;
+        text-align: center;
+      }
+
+      .foto-preview {
+        max-width: 100%;
+        max-height: 200px;
+        border-radius: 5px;
+        border: 2px solid #dee2e6;
+        display: none;
+      }
+
+      .foto-preview.loaded {
+        display: inline-block;
+}
+    </style>
+  </head>
+
+  <body>
+    <!-- NAVBAR UTAMA ADMIN -->
+    <nav class="navbar navbar-expand-lg bg-nav navbar-dark text-white shadow">
+      <div class="container-fluid">
+        <!-- Branding sekolah -->
+        <a class="navbar-brand d-flex align-items-center" href="admin.html">
+          <img class="foto-sd me-2" src="assets/images/logo.png" alt="SD" height="40" />
+          SD Nusantara
+        </a>
+
+        <!-- Tombol toggle untuk mode mobile -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Menu Navigasi -->
+        <div class="collapse navbar-collapse" id="mainNavbar">
+          <ul class="navbar-nav me-auto">
+            <!-- Dashboard -->
+            <li class="nav-item">
+              <a class="nav-link" href="admin.html" id="nav-home">
+                <i class="fas fa-home"></i> Dashboard
+              </a>
+            </li>
+
+            <!-- Data Guru -->
+            <li class="nav-item">
+              <a class="nav-link" href="guru.html" id="nav-guru">
+                <i class="fas fa-chalkboard-teacher"></i> Data Guru
+              </a>
+            </li>
+
+            <!-- Dropdown Kelas -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                <i class="fas fa-users"></i> Data Kelas
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="kelas1.html">Kelas 1</a></li>
+                <li><a class="dropdown-item" href="kelas2.html">Kelas 2</a></li>
+                <li><a class="dropdown-item" href="kelas3.html">Kelas 3</a></li>
+                <li><a class="dropdown-item" href="kelas4.html">Kelas 4</a></li>
+                <li><a class="dropdown-item" href="kelas5.html">Kelas 5</a></li>
+                <li><a class="dropdown-item" href="kelas6.html">Kelas 6</a></li>
+              </ul>
+            </li>
+
+            <!-- Pengumuman -->
+            <li class="nav-item">
+              <a class="nav-link" href="pengumuman.html">
+                <i class="fas fa-bullhorn"></i> Pengumuman
+              </a>
+            </li>
+
+            <!-- Jadwal -->
+            <li class="nav-item">
+              <a class="nav-link" href="jadwal.html">
+                <i class="fas fa-calendar-alt"></i> Jadwal
+              </a>
+            </li>
+          </ul>
+
+          <!-- Menu kanan: Profil Admin -->
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                <i class="fas fa-user-cog"></i> Admin
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="profile.html"><i class="fas fa-user"></i> Profil Saya</a></li>
+                <li><a class="dropdown-item" href="settings.html"><i class="fas fa-cog"></i> Pengaturan</a></li>
+                <li><hr class="dropdown-divider" /></li>
+                <li><a class="dropdown-item text-danger" href="index.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Breadcrumb untuk navigasi lokasi halaman -->
+    <nav aria-label="breadcrumb" class="container mt-3">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="admin.html">Home</a></li>
+        <li class="breadcrumb-item active" id="breadcrumb-current">Data Guru</li>
+      </ol>
+    </nav>
+
+    <!-- KONTEN UTAMA -->
+    <div class="container mt-4">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Daftar Guru SD Nusantara</h1>
+
+        <!-- Pencarian dan tombol tambah -->
+        <div class="d-flex gap-2">
+          <input type="text" id="searchGuru" class="form-control" placeholder="Cari guru..." style="width: 250px" />
+          <button class="btn btn-primary" onclick="guruManager.openAddModal()">
+            <i class="fas fa-plus"></i> Tambah Guru
+          </button>
+        </div>
+      </div>
+
+      <!-- Tempat daftar guru ditampilkan secara dinamis oleh JS -->
+      <div class="row" id="guru-container"></div>
+    </div>
+
+    <!-- MODAL DETAIL GURU -->
+    <div class="modal fade detail-modal" id="detailGuruModal" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header bg-dark text-white">
+            <h5 class="modal-title">Detail Guru</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="text-center p-4">
+              <img id="detail-guru-foto" src="" alt="Foto Guru" class="modal-img rounded-circle mb-3" style="width:200px;height:200px;object-fit:cover;">
+              <h4 id="detail-guru-nama" class="mb-2">-</h4>
+              <p class="text-muted mb-3">NIP: <span id="detail-guru-nip">-</span></p>
+            </div>
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-md-6 mb-2"><strong>Jabatan:</strong> <span id="detail-guru-jabatan">-</span></div>
+                <div class="col-md-6 mb-2"><strong>Mata Pelajaran:</strong> <span id="detail-guru-mapel">-</span></div>
+                <div class="col-md-6 mb-2"><strong>Pendidikan:</strong> <span id="detail-guru-pendidikan">-</span></div>
+                <div class="col-md-6 mb-2"><strong>Email:</strong> <span id="detail-guru-email">-</span></div>
+                <div class="col-md-6 mb-2"><strong>Telepon:</strong> <span id="detail-guru-telepon">-</span></div>
+              </div>
+              <div class="mt-3">
+                <strong>Riwayat Mengajar:</strong>
+                <p id="detail-guru-riwayat" class="mt-1">-</p>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- MODAL TAMBAH/EDIT GURU (MODIFIKASI) -->
+    <div class="modal fade" id="guruModal" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header bg-dark text-white">
+            <h5 class="modal-title" id="guruModalLabel">Tambah Guru Baru</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <form id="guruForm">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">NIP</label>
+                  <input type="text" class="form-control" id="guru-nip" required />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Nama Lengkap</label>
+                  <input type="text" class="form-control" id="guru-nama" required />
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Jabatan</label>
+                  <input type="text" class="form-control" id="guru-jabatan" required />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Mata Pelajaran</label>
+                  <input type="text" class="form-control" id="guru-mapel" required />
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Pendidikan</label>
+                  <input type="text" class="form-control" id="guru-pendidikan" required />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Email</label>
+                  <input type="email" class="form-control" id="guru-email" required />
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Telepon</label>
+                  <input type="text" class="form-control" id="guru-telepon" required />
+                </div>
+                
+                <!-- MODIFIKASI: Foto dengan dua pilihan -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Foto</label>
+                  <div class="mb-2">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="fotoOption" id="fotoUrlOption" value="url" checked>
+                      <label class="form-check-label" for="fotoUrlOption">URL</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="fotoOption" id="fotoUploadOption" value="upload">
+                      <label class="form-check-label" for="fotoUploadOption">Upload File</label>
+                    </div>
+                  </div>
+                  
+                  <div id="urlFotoContainer">
+                    <input type="text" class="form-control" id="guru-foto-url" placeholder="https://example.com/foto.jpg" />
+                  </div>
+                  
+                  <div id="uploadFotoContainer" style="display: none;">
+                    <input type="file" class="form-control" id="guru-foto-upload" accept="image/*" />
+                    <div class="mt-2">
+                      <img id="fotoPreview" src="#" alt="Preview" style="display:none; max-width:100%; max-height:150px; object-fit:cover; border-radius:5px;" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Riwayat Mengajar</label>
+                <textarea class="form-control" id="guru-riwayat" rows="3" required></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            <button type="submit" form="guruForm" class="btn btn-primary">Simpan</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- FOOTER -->
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+      <div class="container">
+        <p>&copy; 2024 SD Nusantara. All rights reserved.</p>
+        <p class="mb-0">Jl. Pendidikan No. 123, Jakarta | Telp: (021) 123456</p>
+      </div>
+    </footer>
+
+    <!-- Menghubungkan file JavaScript -->
+    <script src="dist/js/navigation.js"></script>
+    <script src="dist/js/storage.js"></script>
+    <script src="dist/js/guru.js"></script>
+    <script src="dist/js/dashboard.js"></script>
+  </body>
+</html>
