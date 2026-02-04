@@ -36,7 +36,7 @@
         }
         
         .modal-title {
-            color: #333;
+            color: #efeded;
             font-weight: 600;
         }
         
@@ -153,7 +153,7 @@
                     </li>
 
                     <!-- Dropdown Kelas -->
-                    <li class="nav-item dropdown">
+                    <!--<li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             <i class="fas fa-users"></i> Data Kelas
                         </a>
@@ -165,7 +165,7 @@
                             <li><a class="dropdown-item" href="kelas5.html">Kelas 5</a></li>
                             <li><a class="dropdown-item" href="kelas6.html">Kelas 6</a></li>
                         </ul>
-                    </li>
+                    </li>-->
 
                     <li class="nav-item">
                         <a class="nav-link" href="pengumuman.html">
@@ -189,7 +189,7 @@
                             <li><a class="dropdown-item" href="profile.html"><i class="fas fa-user"></i> Profil Saya</a></li>
                             <li><a class="dropdown-item" href="settings.html"><i class="fas fa-cog"></i> Pengaturan</a></li>
                             <li><hr class="dropdown-divider" /></li>
-                            <li><a class="dropdown-item text-danger" href="index.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                            <li><a class="dropdown-item text-danger" href="login.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -325,12 +325,12 @@
                             
                             <!-- Jurusan hanya untuk kelas 4-6 -->
                             <div class="col-md-4 mb-3" id="jurusanContainer" style="display:none">
-                                <label class="form-label">Jurusan</label>
+                                <label class="form-label">kursus (optional)</label>
                                 <select class="form-control" id="siswa-jurusan">
-                                    <option value="">Pilih Jurusan</option>
+                                    <option value="">Pilih kursus </option>
                                     <option value="IPA">IPA</option>
                                     <option value="IPS">IPS</option>
-                                    <option value="Bahasa">Bahasa</option>
+                                    <option value="matematika">matematika</option>
                                     <option value="Umum">Umum</option>
                                 </select>
                             </div>
@@ -437,13 +437,12 @@
     </div>
 
     <!-- FOOTER -->
-    <footer class="bg-dark text-white text-center py-3 mt-5">
-        <div class="container">
-            <p>&copy; 2024 SD Nusantara. All rights reserved.</p>
-            <p class="mb-0">Jl. Pendidikan No. 123, Jakarta | Telp: (021) 123456</p>
-        </div>
-    </footer>
-
+     <footer class="bg-dark text-white text-center py-3 fixed-bottom">
+    <div class="container">
+        <p>&copy; 2024 SD Nusantara. All rights reserved.</p>
+        <p class="mb-0">Jl. Pendidikan No. 123, Jakarta | Telp: (021) 123456</p>
+    </div>
+</footer>
     <!-- JavaScript Files -->
     <script src="dist/js/navigation.js"></script>
     <script src="dist/js/storage.js"></script>

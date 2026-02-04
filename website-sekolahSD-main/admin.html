@@ -48,7 +48,7 @@
           <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="mainNavbar">
+        <div class="collapse navbar-collapse justify-content-between w-100" id="mainNavbar">
           <!-- Menu Utama -->
           <ul class="navbar-nav me-auto">
             <li class="nav-item">
@@ -61,35 +61,13 @@
                 <i class="fas fa-chalkboard-teacher"></i> Data Guru
               </a>
             </li>
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-              >
-                <i class="fas fa-users"></i> Data Kelas
-              </a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="kelas1.html">Kelas 1</a></li>
-                <li><a class="dropdown-item" href="kelas2.html">Kelas 2</a></li>
-                <li><a class="dropdown-item" href="kelas3.html">Kelas 3</a></li>
-                <li><a class="dropdown-item" href="kelas4.html">Kelas 4</a></li>
-                <li><a class="dropdown-item" href="kelas5.html">Kelas 5</a></li>
-                <li><a class="dropdown-item" href="kelas6.html">Kelas 6</a></li>
-              </ul>
-            </li>
             <li class="nav-item">
-              <a class="nav-link" href="pengumuman.html">
-                <i class="fas fa-bullhorn"></i> Pengumuman
+              <a class="nav-link" href="kelas1.html" id="nav-guru">
+                <i class="fas fa-users"></i> Data siswa
               </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="jadwal.html">
-                <i class="fas fa-calendar-alt"></i> Jadwal
-              </a>
-            </li>
-          </ul>
+            </ul>
+            
 
           <!-- Menu Kanan -->
           <ul class="navbar-nav ms-auto">
@@ -230,31 +208,42 @@
   </div>
 <!--riwayat aktivitas dan pengumuman aktivitas-->
     <div class="row">
-      <div class="col-md-6 mb-4">
-        <div class="card">
-          <div class="card-header bg-dark text-white">
-            <h5 class="mb-0">
-              <i class="fas fa-history"></i> Aktivitas Terbaru
-            </h5>
-          </div>
-          <div class="card-body">
-            <ul  id="activity-list" class="list-group list-group-flush">
-              <li class="list-group list-group-flush">
-                <small class="text-muted">Hari ini, 10:30</small><br />
-                Data siswa baru ditambahkan - Kelas 1
-              </li>
-              <li class="list-group list-group-flush">
-                <small class="text-muted">Kemarin, 14:15</small><br />
-                Pengumuman baru diterbitkan
-              </li>
-              <li class="list-group list-group-flush">
-                <small class="text-muted">2 hari lalu</small><br />
-                Update jadwal pelajaran
-              </li>
-            </ul>
-          </div>
+  <div class="col-md-6 mb-4">
+    <div class="card">
+      <div class="card-header bg-dark text-white">
+        <h5 class="mb-0">
+          <i class="fas fa-history"></i> Aktivitas Terbaru
+        </h5>
+      </div>
+      <div class="card-body" style="padding: 0;"> <!-- Tambahkan padding: 0 -->
+        <div style="max-height: 578px; overflow-y: auto;"> <!-- Div untuk scroll -->
+          <ul id="activity-list" class="list-group list-group-flush">
+            <li class="list-group-item">
+              <small class="text-muted">Hari ini, 10:30</small><br />
+              Data siswa baru ditambahkan - Kelas 1
+            </li>
+            <li class="list-group-item">
+              <small class="text-muted">Kemarin, 14:15</small><br />
+              Pengumuman baru diterbitkan
+            </li>
+            <li class="list-group-item">
+              <small class="text-muted">2 hari lalu</small><br />
+              Update jadwal pelajaran
+            </li>
+            <!-- Tambahkan lebih banyak aktivitas jika perlu -->
+            <li class="list-group-item">
+              <small class="text-muted">3 hari lalu</small><br />
+              Pembaruan data guru
+            </li>
+            <li class="list-group-item">
+              <small class="text-muted">4 hari lalu</small><br />
+              Rapat dewan guru
+            </li>
+          </ul>
         </div>
       </div>
+    </div>
+  </div>
 
       <div class="col-md-6 mb-4">
         <div class="card">
