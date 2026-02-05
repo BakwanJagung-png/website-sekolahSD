@@ -122,6 +122,26 @@
             padding: 3px 8px;
             margin-left: 5px;
         }
+
+        /* Tambahkan di bagian atas style atau file CSS terpisah */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container.mt-4 {
+    flex: 1;
+}
+
+footer {
+    margin-top: auto;
+}
     </style>
 </head>
 
@@ -147,37 +167,12 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link active" href="siswa.html" id="nav-siswa">
+                        <a class="nav-link active" href="dataSiswa.html" id="nav-siswa">
                             <i class="fas fa-user-graduate"></i> Data Siswa
                         </a>
                     </li>
 
-                    <!-- Dropdown Kelas -->
-                    <!--<li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-users"></i> Data Kelas
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="kelas1.html">Kelas 1</a></li>
-                            <li><a class="dropdown-item" href="kelas2.html">Kelas 2</a></li>
-                            <li><a class="dropdown-item" href="kelas3.html">Kelas 3</a></li>
-                            <li><a class="dropdown-item" href="kelas4.html">Kelas 4</a></li>
-                            <li><a class="dropdown-item" href="kelas5.html">Kelas 5</a></li>
-                            <li><a class="dropdown-item" href="kelas6.html">Kelas 6</a></li>
-                        </ul>
-                    </li>-->
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="pengumuman.html">
-                            <i class="fas fa-bullhorn"></i> Pengumuman
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="jadwal.html">
-                            <i class="fas fa-calendar-alt"></i> Jadwal
-                        </a>
-                    </li>
+                   
                 </ul>
 
                 <ul class="navbar-nav ms-auto">
@@ -437,12 +432,12 @@
     </div>
 
     <!-- FOOTER -->
-     <footer class="bg-dark text-white text-center py-3 fixed-bottom">
-    <div class="container">
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+      <div class="container">
         <p>&copy; 2024 SD Nusantara. All rights reserved.</p>
         <p class="mb-0">Jl. Pendidikan No. 123, Jakarta | Telp: (021) 123456</p>
-    </div>
-</footer>
+      </div>
+    </footer>
     <!-- JavaScript Files -->
     <script src="dist/js/navigation.js"></script>
     <script src="dist/js/storage.js"></script>

@@ -745,3 +745,13 @@ style.textContent = `
     #fotoPreview:not([src="#"]) { display: block !important; }
 `;
 document.head.appendChild(style);
+
+// Di akhir fungsi saveSiswa() di siswa.js, tambahkan:
+function triggerSiswaDataChanged() {
+    const event = new Event('siswaDataChanged');
+    document.dispatchEvent(event);
+}
+
+// Panggil setelah setiap perubahan data:
+// Di saveSiswa(), deleteSiswa(), dll tambahkan:
+triggerSiswaDataChanged();
